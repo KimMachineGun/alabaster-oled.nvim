@@ -1,0 +1,16 @@
+return {
+    bg = "#000000",
+    surface = "#080B0C",
+    surface_alt = "#111719",
+    selection = "#293334",
+    fg = "#CECECE",
+    muted = "#708B8D",
+    comment = "#DFDF8E",
+    comment_bg = "#292815",
+    string = "#95CB82",
+    constant = "#CC8BC9",
+    definition = "#71ADE7",
+    active = "#CD974B",
+    red = "#F07178",
+    cyan = "#47BEA9",
+}

@@ -1,7 +1,33 @@
-Alabaster Color Scheme
-===
+# Alabaster OLED
 
-A color scheme with minimal amount of highlighting for neovim.
+A pure-black OLED variant of Alabaster for Neovim, based on
+[dchinmay2/alabaster.nvim](https://github.com/dchinmay2/alabaster.nvim).
+
+It keeps Alabaster's language-specific Tree-sitter queries and minimal semantic
+model, while adding:
+
+- a true `#000000` editor background;
+- highlighted comments on a low-luminance olive background;
+- OLED-friendly floating, menu, fold, and status-line surfaces;
+- explicit LSP semantic-token mappings, including Go package namespaces;
+- no bold or italic syntax highlighting.
+
+## Usage
+
+```lua
+{
+    "KimMachineGun/alabaster-oled.nvim",
+    priority = 1000,
+    config = function()
+        vim.cmd.colorscheme("alabaster-oled")
+    end,
+}
+```
+
+The original `alabaster` colorscheme remains available so upstream changes can
+be merged with a small, isolated OLED delta.
+
+## Upstream motivation
 
 ## Motivation
 (from the original [sublime text theme](https://github.com/tonsky/sublime-scheme-alabaster))
