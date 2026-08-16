@@ -58,6 +58,33 @@ for index, expected in ipairs(terminal) do
     assert(vim.g[name] == expected, ("%s: expected %s, got %s"):format(name, expected, tostring(vim.g[name])))
 end
 
+local go_parser = vim.fs.joinpath(vim.fn.stdpath("data"), "site", "parser", "go.so")
+if vim.uv.fs_stat(go_parser) then
+    vim.treesitter.language.add("go", { path = go_parser })
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, {
+        "package sample",
+        "var Single = nil",
+        "var (",
+        "    Grouped = true",
+        ")",
+        "type Widget struct{}",
+        "func main() {}",
+    })
+
+    local tree = assert(vim.treesitter.get_parser(0, "go")):parse(true)[1]
+    local query_path = vim.fs.joinpath(root, "after", "queries", "go", "highlights.scm")
+    local query = vim.treesitter.query.parse("go", table.concat(vim.fn.readfile(query_path), "\n"))
+    local definitions = {}
+    for id, node in query:iter_captures(tree:root(), 0, 0, -1) do
+        if query.captures[id] == "AlabasterDefinition" then
+            definitions[vim.treesitter.get_node_text(node, 0)] = true
+        end
+    end
+    for _, name in ipairs({ "sample", "Single", "Grouped", "Widget", "main" }) do
+        assert(definitions[name], "missing Go definition capture: " .. name)
+    end
+end
+
 vim.api.nvim_buf_set_lines(0, 0, -1, false, {
     "font_family MonoLisaCode",
     "font_size 8.0",
