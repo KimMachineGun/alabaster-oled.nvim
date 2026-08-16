@@ -36,26 +36,7 @@ local function set_highlights(highlights)
 end
 
 local function set_terminal_colors(palette)
-    local colors = {
-        palette.bg,
-        "#D45D5D",
-        palette.string,
-        palette.active,
-        palette.definition,
-        palette.constant,
-        palette.ansi_cyan,
-        palette.fg,
-        palette.muted,
-        palette.red,
-        "#B0E39D",
-        palette.comment,
-        "#8FC5F4",
-        "#E2A6DE",
-        "#6FD5C0",
-        "#FFFFFF",
-    }
-
-    for index, color in ipairs(colors) do
+    for index, color in ipairs(palette.terminal) do
         vim.g["terminal_color_" .. (index - 1)] = color
     end
 end
@@ -161,8 +142,9 @@ function M.apply()
         ["@lsp.typemod.function.definition"] = { fg = palette.definition },
         ["@lsp.typemod.method.declaration"] = { fg = palette.definition },
 
-        -- Let Tree-sitter distinguish package declarations from references.
+        -- Let Tree-sitter distinguish Go constants and declarations from ordinary uses.
         ["@lsp.type.namespace.go"] = {},
+        ["@lsp.type.variable.go"] = {},
 
         -- Comment annotations keep the background model but carry urgency.
         Todo = { fg = palette.bg, bg = palette.comment, bold = false },

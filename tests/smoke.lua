@@ -32,6 +32,31 @@ assert_color("Special", "fg", "#708B8D")
 assert_color("SpecialKey", "fg", "#708B8D")
 assert_color("SpecialChar", "fg", "#CC8BC9")
 assert(next(highlight("@lsp.type.namespace.go")) == nil, "Go namespace LSP highlighting should be disabled")
+assert(next(highlight("@lsp.type.variable.go")) == nil, "Go variable LSP highlighting should be disabled")
+
+local terminal = {
+    "#000000",
+    "#C0696A",
+    "#90BF86",
+    "#CD974B",
+    "#74A7D5",
+    "#BB8DBE",
+    "#52B5A4",
+    "#CECECE",
+    "#333333",
+    "#F07178",
+    "#B0E39D",
+    "#DFDF8E",
+    "#8FC5F4",
+    "#E2A6DE",
+    "#6FD5C0",
+    "#FFFFFF",
+}
+
+for index, expected in ipairs(terminal) do
+    local name = "terminal_color_" .. (index - 1)
+    assert(vim.g[name] == expected, ("%s: expected %s, got %s"):format(name, expected, tostring(vim.g[name])))
+end
 
 vim.api.nvim_buf_set_lines(0, 0, -1, false, {
     "font_family MonoLisaCode",
