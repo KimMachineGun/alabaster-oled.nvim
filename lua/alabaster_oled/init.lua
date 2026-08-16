@@ -2,6 +2,39 @@ local M = {}
 
 M.palette = require("alabaster_oled.palette")
 
+local kitty_highlights = {
+    kittyOptionName = { link = "AlabasterBase" },
+    kittyModName = { link = "AlabasterBase" },
+    kittyMapName = { link = "AlabasterBase" },
+    kittyMouseMapName = { link = "AlabasterBase" },
+    kittyString = { link = "AlabasterBase" },
+    kittyNumber = { link = "AlabasterConstant" },
+    kittyAlpha = { link = "AlabasterConstant" },
+    kittyColor = { link = "AlabasterConstant" },
+    kittyBoolean = { link = "AlabasterConstant" },
+    kittyConstant = { link = "AlabasterConstant" },
+    kittyKey = { link = "AlabasterConstant" },
+    kittyCtrl = { link = "AlabasterConstant" },
+    kittyAlt = { link = "AlabasterConstant" },
+    kittyShift = { link = "AlabasterConstant" },
+    kittySuper = { link = "AlabasterConstant" },
+    kittyMouseMapType = { link = "AlabasterConstant" },
+    kittyMouseMapGrabbed = { link = "AlabasterConstant" },
+    kittyFlag = { link = "AlabasterPunct" },
+    kittyParameter = { link = "AlabasterPunct" },
+    kittyMapFlag = { link = "AlabasterPunct" },
+    kittyAnd = { link = "AlabasterPunct" },
+    kittyWith = { link = "AlabasterPunct" },
+    kittyLineContinue = { link = "AlabasterPunct" },
+    kittyComment = { link = "Comment" },
+}
+
+local function set_highlights(highlights)
+    for group, highlight in pairs(highlights) do
+        vim.api.nvim_set_hl(0, group, highlight)
+    end
+end
+
 local function set_terminal_colors(palette)
     local colors = {
         palette.bg,
@@ -10,7 +43,7 @@ local function set_terminal_colors(palette)
         palette.active,
         palette.definition,
         palette.constant,
-        palette.cyan,
+        palette.ansi_cyan,
         palette.fg,
         palette.muted,
         palette.red,
@@ -33,6 +66,13 @@ function M.apply()
     set_terminal_colors(palette)
 
     local highlights = {
+        -- Canonical semantic groups used by language queries and legacy syntax adapters.
+        AlabasterBase = { fg = palette.fg },
+        AlabasterString = { fg = palette.string },
+        AlabasterConstant = { fg = palette.constant },
+        AlabasterDefinition = { fg = palette.definition },
+        AlabasterPunct = { fg = palette.muted },
+
         -- OLED surfaces
         Normal = { fg = palette.fg, bg = palette.bg },
         NormalNC = { fg = palette.fg, bg = palette.bg },
@@ -73,8 +113,11 @@ function M.apply()
         Boolean = { fg = palette.constant },
         Float = { fg = palette.constant },
         Function = { fg = palette.definition },
-        Operator = { fg = palette.muted },
-        Delimiter = { fg = palette.muted },
+        Operator = { link = "AlabasterPunct" },
+        Delimiter = { link = "AlabasterPunct" },
+        Special = { link = "AlabasterPunct" },
+        SpecialKey = { link = "AlabasterPunct" },
+        SpecialChar = { link = "AlabasterConstant" },
         Keyword = { fg = palette.fg, bold = false, italic = false },
         Statement = { fg = palette.fg, bold = false, italic = false },
         Type = { fg = palette.fg, bold = false, italic = false },
@@ -91,16 +134,23 @@ function M.apply()
         ["@function"] = { fg = palette.fg },
         ["@function.call"] = { fg = palette.fg },
         ["@function.method.call"] = { fg = palette.fg },
+        ["@function.builtin"] = { link = "AlabasterBase" },
+        ["@constructor"] = { link = "AlabasterBase" },
+        ["@variable.parameter.builtin"] = { link = "AlabasterBase" },
+        ["@attribute.builtin"] = { link = "AlabasterBase" },
+        ["@tag.builtin"] = { link = "AlabasterBase" },
+        ["@character.special"] = { link = "AlabasterConstant" },
+        ["@string.special"] = { link = "AlabasterConstant" },
         ["@method.call"] = { fg = palette.fg },
         ["@keyword"] = { fg = palette.fg, bold = false, italic = false },
         ["@operator"] = { fg = palette.muted },
         ["@punctuation.delimiter"] = { fg = palette.muted },
         ["@punctuation.bracket"] = { fg = palette.muted },
-        ["@AlabasterBase"] = { fg = palette.fg },
-        ["@AlabasterConstant"] = { fg = palette.constant },
-        ["@AlabasterDefinition"] = { fg = palette.definition },
-        ["@AlabasterPunct"] = { fg = palette.muted },
-        ["@AlabasterString"] = { fg = palette.string },
+        ["@AlabasterBase"] = { link = "AlabasterBase" },
+        ["@AlabasterConstant"] = { link = "AlabasterConstant" },
+        ["@AlabasterDefinition"] = { link = "AlabasterDefinition" },
+        ["@AlabasterPunct"] = { link = "AlabasterPunct" },
+        ["@AlabasterString"] = { link = "AlabasterString" },
         ["@AlabasterHashbang"] = { fg = palette.muted },
 
         -- LSP semantic tokens: declarations stand out, calls and uses do not.
@@ -125,14 +175,19 @@ function M.apply()
         DiagnosticError = { fg = palette.red },
         DiagnosticWarn = { fg = palette.active },
         DiagnosticInfo = { fg = palette.definition },
-        DiagnosticHint = { fg = palette.cyan },
+        DiagnosticHint = { fg = palette.diagnostic_hint },
         DiagnosticUnderlineError = { undercurl = true, sp = palette.red },
         DiagnosticUnderlineWarn = { undercurl = true, sp = palette.active },
     }
 
-    for group, highlight in pairs(highlights) do
-        vim.api.nvim_set_hl(0, group, highlight)
-    end
+    set_highlights(highlights)
+    M.apply_kitty()
+end
+
+-- The bundled Kitty syntax loads after colorschemes and force-links its groups.
+-- Reapply only this adapter from after/syntax when alabaster-oled is active.
+function M.apply_kitty()
+    set_highlights(kitty_highlights)
 end
 
 return M

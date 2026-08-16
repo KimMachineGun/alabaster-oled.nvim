@@ -12,5 +12,7 @@ return {
     definition = "#71ADE7",
     active = "#CD974B",
     red = "#F07178",
-    cyan = "#47BEA9",
+    -- Cyan is reserved for ANSI/UI roles, never general syntax highlighting.
+    ansi_cyan = "#47BEA9",
+    diagnostic_hint = "#47BEA9",
 }

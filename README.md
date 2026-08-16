@@ -10,6 +10,7 @@ model, while adding:
 - highlighted comments on a low-luminance olive background;
 - OLED-friendly floating, menu, fold, and status-line surfaces;
 - explicit LSP semantic-token mappings, including Go package namespaces;
+- neutral legacy-syntax fallbacks with a focused Kitty adapter;
 - no bold or italic syntax highlighting.
 
 ## Usage
@@ -26,6 +27,18 @@ model, while adding:
 
 The original `alabaster` colorscheme remains available so upstream changes can
 be merged with a small, isolated OLED delta.
+
+Cyan is reserved for ANSI terminal and diagnostic UI roles. It is not part of
+the syntax palette. Legacy filetypes fall back to Alabaster's base, constant,
+definition, and punctuation groups instead of Neovim's default cyan groups.
+
+## Testing
+
+```sh
+nvim --clean --headless -u NONE \
+  "+luafile tests/smoke.lua" \
+  "+qa"
+```
 
 ## Alabaster motivation
 (from the original [sublime text theme](https://github.com/tonsky/sublime-scheme-alabaster))
