@@ -26,7 +26,7 @@ palette.terminal = {
     "#BB8DBE",
     "#52B5A4",
     palette.fg,
-    "#333333",
+    palette.muted,
     palette.red,
     "#B0E39D",
     palette.comment,

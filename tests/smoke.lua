@@ -43,7 +43,7 @@ local terminal = {
     "#BB8DBE",
     "#52B5A4",
     "#CECECE",
-    "#333333",
+    "#708B8D",
     "#F07178",
     "#B0E39D",
     "#DFDF8E",
