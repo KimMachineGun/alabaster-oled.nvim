@@ -161,8 +161,8 @@ function M.apply()
         ["@lsp.typemod.function.definition"] = { fg = palette.definition },
         ["@lsp.typemod.method.declaration"] = { fg = palette.definition },
 
-        -- gopls knows package namespaces from ordinary variable receivers.
-        ["@lsp.type.namespace.go"] = { fg = palette.string },
+        -- Let Tree-sitter distinguish package declarations from references.
+        ["@lsp.type.namespace.go"] = {},
 
         -- Comment annotations keep the background model but carry urgency.
         Todo = { fg = palette.bg, bg = palette.comment, bold = false },

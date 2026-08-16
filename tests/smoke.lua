@@ -31,7 +31,7 @@ assert_color("Comment", "bg", "#292815")
 assert_color("Special", "fg", "#708B8D")
 assert_color("SpecialKey", "fg", "#708B8D")
 assert_color("SpecialChar", "fg", "#CC8BC9")
-assert_color("@lsp.type.namespace.go", "fg", "#95CB82")
+assert(next(highlight("@lsp.type.namespace.go")) == nil, "Go namespace LSP highlighting should be disabled")
 
 vim.api.nvim_buf_set_lines(0, 0, -1, false, {
     "font_family MonoLisaCode",
