@@ -1,6 +1,5 @@
 ;; vim: ft=query
 ;; extends
 
-(object
-  (pair
-    key: (string) @AlabasterString))
+; JSON has no definition sites: every string, including object keys, is a string.
+(string) @AlabasterString

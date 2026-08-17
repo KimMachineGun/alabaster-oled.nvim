@@ -134,17 +134,35 @@ function M.apply()
         ["@AlabasterString"] = { link = "AlabasterString" },
         ["@AlabasterHashbang"] = { fg = palette.muted },
 
-        -- LSP semantic tokens: declarations stand out, calls and uses do not.
+        -- LSP semantic tokens have higher priority than Tree-sitter. Leave
+        -- dual-role symbols empty so language queries can distinguish their
+        -- declarations from uses; keep only parser-independent constants.
         ["@lsp.type.comment"] = { link = "Comment" },
-        ["@lsp.type.function"] = { fg = palette.fg },
-        ["@lsp.type.method"] = { fg = palette.fg },
-        ["@lsp.typemod.function.declaration"] = { fg = palette.definition },
-        ["@lsp.typemod.function.definition"] = { fg = palette.definition },
-        ["@lsp.typemod.method.declaration"] = { fg = palette.definition },
-
-        -- Let Tree-sitter distinguish Go constants and declarations from ordinary uses.
-        ["@lsp.type.namespace.go"] = {},
-        ["@lsp.type.variable.go"] = {},
+        ["@lsp.type.class"] = {},
+        ["@lsp.type.enum"] = {},
+        ["@lsp.type.function"] = {},
+        ["@lsp.type.interface"] = {},
+        ["@lsp.type.method"] = {},
+        ["@lsp.type.namespace"] = {},
+        ["@lsp.type.property"] = {},
+        ["@lsp.type.struct"] = {},
+        ["@lsp.type.type"] = {},
+        ["@lsp.type.variable"] = {},
+        ["@lsp.mod.declaration"] = {},
+        ["@lsp.typemod.class.declaration"] = {},
+        ["@lsp.typemod.class.definition"] = {},
+        ["@lsp.typemod.enum.declaration"] = {},
+        ["@lsp.typemod.function.declaration"] = {},
+        ["@lsp.typemod.function.definition"] = {},
+        ["@lsp.typemod.macro.declaration"] = {},
+        ["@lsp.typemod.method.declaration"] = {},
+        ["@lsp.typemod.struct.declaration"] = {},
+        ["@lsp.typemod.type.declaration"] = {},
+        ["@lsp.type.const"] = { link = "AlabasterConstant" },
+        ["@lsp.type.enumMember"] = { link = "AlabasterConstant" },
+        ["@lsp.type.macro"] = { link = "AlabasterConstant" },
+        ["@lsp.typemod.variable.readonly.go"] = { link = "AlabasterConstant" },
+        ["@lsp.typemod.enumMember.defaultLibrary"] = { link = "AlabasterConstant" },
 
         -- Comment annotations keep the background model but carry urgency.
         Todo = { fg = palette.bg, bg = palette.comment, bold = false },

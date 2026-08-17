@@ -1,32 +1,33 @@
 ;; extends
-(list_lit
-  value: (sym_lit) @_keyword.function
-  (#any-of? @_keyword.function "fn" "fn*" "defn" "defn-")
-  value: (sym_lit)? @AlabasterDefinition
-  value: (vec_lit)
-  (str_lit)? @comment)
 
-(list_lit
-  value: (sym_lit) @_keyword.function
-  (#any-of? @_keyword.function "fn" "fn*" "defn" "defn-")
-  value: (sym_lit)? @AlabasterDefinition
-  value: (list_lit))
+((source
+   (list_lit
+     .
+     (sym_lit) @_definition
+     .
+     (sym_lit
+       name: (sym_name) @AlabasterDefinition)))
+ (#any-of? @_definition
+   "def"
+   "definline"
+   "definterface"
+   "defmacro"
+   "defmulti"
+   "defn"
+   "defn-"
+   "defonce"
+   "defprotocol"
+   "defrecord"
+   "defstruct"
+   "deftype"
+   "ns"))
 
-(list_lit
-  value: (sym_lit) @_keyword.function
-  (#eq? @_keyword.function "defmacro")
-  value: (sym_lit)? @AlabasterDefinition
-  value: (vec_lit)
-  (str_lit)? @comment)
+((source
+   (list_lit
+     .
+     (sym_lit) @_declare
+     (sym_lit
+       name: (sym_name) @AlabasterDefinition)))
+ (#eq? @_declare "declare"))
 
-(list_lit
-  value: (sym_lit) @_include
-  (#eq? @_include "ns")
-  value: (sym_lit) @AlabasterDefinition)
-
-(list_lit
-  value: (kwd_lit) @AlabasterConstant)
-(vec_lit
-  value: (kwd_lit) @AlabasterConstant)
-(map_lit
-  value: (kwd_lit) @AlabasterConstant)
+(kwd_lit) @AlabasterConstant

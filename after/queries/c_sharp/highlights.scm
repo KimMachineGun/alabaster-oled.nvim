@@ -1,38 +1,70 @@
 ; vim: ft=query
 ; extends
 
-(class_declaration
-  name: (identifier) @AlabasterDefinition)
+[
+  (class_declaration
+    name: (identifier) @AlabasterDefinition)
+  (delegate_declaration
+    name: (identifier) @AlabasterDefinition)
+  (enum_declaration
+    name: (identifier) @AlabasterDefinition)
+  (interface_declaration
+    name: (identifier) @AlabasterDefinition)
+  (record_declaration
+    name: (identifier) @AlabasterDefinition)
+  (struct_declaration
+    name: (identifier) @AlabasterDefinition)
+]
 
-(struct_declaration
-  name: (identifier) @AlabasterDefinition)
+[
+  (constructor_declaration
+    name: (identifier) @AlabasterDefinition)
+  (destructor_declaration
+    name: (identifier) @AlabasterDefinition)
+  (event_declaration
+    name: (identifier) @AlabasterDefinition)
+  (method_declaration
+    name: (identifier) @AlabasterDefinition)
+  (property_declaration
+    name: (identifier) @AlabasterDefinition)
+]
 
-(enum_declaration
-  name: (identifier) @AlabasterDefinition)
+(field_declaration
+  (variable_declaration
+    (variable_declarator
+      name: (identifier) @AlabasterDefinition)))
 
-(interface_declaration
-  name: (identifier) @AlabasterDefinition)
+(event_field_declaration
+  (variable_declaration
+    (variable_declarator
+      name: (identifier) @AlabasterDefinition)))
 
-(delegate_declaration
-  name: (identifier) @AlabasterDefinition)
+[
+  (namespace_declaration
+    name: [
+      (identifier) @AlabasterDefinition
+      (qualified_name) @AlabasterDefinition
+    ])
+  (file_scoped_namespace_declaration
+    name: [
+      (identifier) @AlabasterDefinition
+      (qualified_name) @AlabasterDefinition
+    ])
+]
 
-(record_declaration
-  name: (identifier) @AlabasterDefinition)
+(enum_member_declaration
+  name: (identifier) @AlabasterConstant)
 
-(method_declaration
-  name: (identifier) @AlabasterDefinition)
+((field_declaration
+   (modifier) @_const
+   (variable_declaration
+     (variable_declarator
+       name: (identifier) @AlabasterConstant)))
+ (#eq? @_const "const"))
 
-(constructor_declaration
-  name: (identifier) @AlabasterDefinition)
-
-(destructor_declaration
-  name: (identifier) @AlabasterDefinition)
-
-(method_declaration
-  name: (identifier) @AlabasterDefinition)
-
-(property_declaration
-  name: (identifier) @AlabasterDefinition)
-
-(namespace_declaration
-  name: (identifier) @AlabasterDefinition)
+((local_declaration_statement
+   (modifier) @_const
+   (variable_declaration
+     (variable_declarator
+       name: (identifier) @AlabasterConstant)))
+ (#eq? @_const "const"))

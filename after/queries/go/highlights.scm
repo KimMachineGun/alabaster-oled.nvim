@@ -4,28 +4,27 @@
 (package_clause
   (package_identifier) @AlabasterDefinition)
 
-(source_file
-  (var_declaration
-    (var_spec
-      name: (identifier) @AlabasterDefinition)))
+((var_spec
+  name: (identifier) @AlabasterDefinition) @_definition
+  (#not-has-ancestor? @_definition block))
 
-(source_file
-  (var_declaration
-    (var_spec_list
-      (var_spec
-        name: (identifier) @AlabasterDefinition))))
+([
+  (type_spec
+    name: (type_identifier) @AlabasterDefinition)
+  (type_alias
+    name: (type_identifier) @AlabasterDefinition)
+] @_definition
+  (#not-has-ancestor? @_definition block))
 
-(source_file
-  (type_declaration
-    (type_spec
-      name: (type_identifier) @AlabasterDefinition)))
-
-(const_declaration
-  (const_spec
-    name: (identifier) @AlabasterDefinition))
+(const_spec
+  (identifier) @AlabasterConstant)
 
 (function_declaration
   name: (identifier) @AlabasterDefinition)
 
 (method_declaration
   name: (field_identifier) @AlabasterDefinition)
+
+((method_elem
+  name: (field_identifier) @AlabasterDefinition) @_definition
+  (#not-has-ancestor? @_definition block))

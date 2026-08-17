@@ -1,81 +1,63 @@
 ;; vim: ft=query
 ;; extends
 
-(function_declarator
+((field_identifier) @AlabasterDefinition
+  (#has-parent? @AlabasterDefinition field_declaration init_declarator pointer_declarator reference_declarator array_declarator function_declarator parenthesized_declarator)
+  (#has-ancestor? @AlabasterDefinition field_declaration function_definition)
+  (#not-has-ancestor? @AlabasterDefinition compound_statement parameter_declaration))
+
+((identifier) @AlabasterDefinition
+  (#has-parent? @AlabasterDefinition reference_declarator structured_binding_declarator)
+  (#has-ancestor? @AlabasterDefinition declaration function_definition)
+  (#not-has-ancestor? @AlabasterDefinition compound_statement parameter_declaration field_declaration))
+
+((identifier) @AlabasterDefinition
+  (#has-parent? @AlabasterDefinition qualified_identifier destructor_name)
+  (#has-ancestor? @AlabasterDefinition function_declarator)
+  (#not-has-ancestor? @AlabasterDefinition compound_statement parameter_declaration))
+
+((operator_name) @AlabasterDefinition
+  (#has-ancestor? @AlabasterDefinition function_declarator)
+  (#not-has-ancestor? @AlabasterDefinition compound_statement parameter_declaration))
+
+((declaration
   declarator: (qualified_identifier
-                name: (identifier) @AlabasterDefinition))
+    name: (identifier) @AlabasterDefinition)) @_definition
+  (#not-has-ancestor? @_definition compound_statement field_declaration))
 
-;; TODO there's probably a lot of duplicates here
+((declaration
+  declarator: (init_declarator
+    declarator: (qualified_identifier
+      name: (identifier) @AlabasterDefinition))) @_definition
+  (#not-has-ancestor? @_definition compound_statement field_declaration))
 
-(function_definition
-  declarator: (function_declarator
-                declarator: (destructor_name (identifier) @AlabasterDefinition)))
+((identifier) @AlabasterDefinition
+  (#has-parent? @AlabasterDefinition qualified_identifier)
+  (#has-ancestor? @AlabasterDefinition pointer_declarator reference_declarator array_declarator)
+  (#has-ancestor? @AlabasterDefinition declaration)
+  (#not-has-ancestor? @AlabasterDefinition function_declarator compound_statement parameter_declaration field_declaration))
 
-(function_definition
-  declarator: (function_declarator
-                declarator: (field_identifier) @AlabasterDefinition))
+((class_specifier
+  name: (type_identifier) @AlabasterDefinition) @_definition
+  (#not-has-ancestor? @_definition compound_statement))
 
-(function_definition
-  declarator: (function_declarator
-                declarator: (qualified_identifier
-                              name: (destructor_name
-                                      (identifier) @AlabasterDefinition))))
+((alias_declaration
+  name: (type_identifier) @AlabasterDefinition) @_definition
+  (#not-has-ancestor? @_definition compound_statement))
 
-(declaration
-  declarator: (function_declarator
-                declarator:
-                  (destructor_name (identifier) @AlabasterDefinition)))
+((concept_definition
+  name: (identifier) @AlabasterDefinition) @_definition
+  (#not-has-ancestor? @_definition compound_statement))
 
-(field_declaration
-  declarator: (function_declarator
-                declarator: (field_identifier) @AlabasterDefinition))
+((namespace_definition
+  name: (namespace_identifier) @AlabasterDefinition) @_definition
+  (#not-has-ancestor? @_definition compound_statement))
 
-(field_declaration
-  declarator: (pointer_declarator
-                declarator: (function_declarator
-                              declarator:
-                                (field_identifier) @AlabasterDefinition)))
+((namespace_definition
+  name: (nested_namespace_specifier
+    (namespace_identifier) @AlabasterDefinition)) @_definition
+  (#not-has-ancestor? @_definition compound_statement))
 
-(function_declarator
- declarator: (field_identifier) @AlabasterDefinition)
-
-(function_declarator
-     declarator: (qualified_identifier
-                   name: (identifier) @AlabasterDefinition))
-(function_declarator
-     declarator: (qualified_identifier
-                   name: (qualified_identifier
-                           name: (identifier) @AlabasterDefinition)))
-((function_declarator
-     declarator: (qualified_identifier
-                   name: (identifier) @AlabasterDefinition))
- (#lua-match? @AlabasterDefinition "^[A-Z]"))
-
-(labeled_statement
-  label: (statement_identifier) @AlabasterDefinition)
-
-(type_definition
-  declarator: (type_identifier) @AlabasterDefinition)
-
-(preproc_def
-  name: (identifier) @AlabasterDefinition)
-
-(class_specifier
-  name: (type_identifier) @AlabasterDefinition)
-
-(struct_specifier
-  name: (type_identifier) @AlabasterDefinition)
-
-(struct_specifier
-  name: (type_identifier) @AlabasterDefinition)
-
-(declaration
-  type: (struct_specifier
-          name: (type_identifier) @AlabasterBase))
-
-(enum_specifier
-    name: (type_identifier) @AlabasterDefinition)
-
-(declaration
-  type: (enum_specifier
-          name: (type_identifier) @AlabasterBase))
+((namespace_alias_definition
+  name: (namespace_identifier) @AlabasterDefinition) @_definition
+  (#not-has-ancestor? @_definition compound_statement))

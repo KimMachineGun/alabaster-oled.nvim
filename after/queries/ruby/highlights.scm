@@ -1,29 +1,79 @@
 ;; vim: ft=query
 ;; extends
 
-;; methods
-(method
-  name: (identifier) @AlabasterDefinition)
+(constant) @AlabasterConstant
 
-;; singleton methods (def self.method)
-(singleton_method
-  name: (identifier) @AlabasterDefinition)
+[
+  (bare_symbol)
+  (simple_symbol)
+  (hash_key_symbol)
+  (delimited_symbol)
+] @AlabasterConstant
 
-;; simple classes
-(class
-  name: (constant) @AlabasterDefinition)
+((method
+  name: [
+    (identifier) @AlabasterDefinition
+    (constant) @AlabasterDefinition
+    (setter
+      name: (identifier) @AlabasterDefinition)
+    (operator) @AlabasterDefinition
+  ]) @_definition
+  (#not-has-ancestor? @_definition method))
 
-;; modules
-(module
-  name: (constant) @AlabasterDefinition)
+((singleton_method
+  name: [
+    (identifier) @AlabasterDefinition
+    (constant) @AlabasterDefinition
+    (setter
+      name: (identifier) @AlabasterDefinition)
+    (operator) @AlabasterDefinition
+  ]) @_definition
+  (#not-has-ancestor? @_definition method))
 
-;; all constants in scope_resolution chains (handles any nesting depth)
-(scope_resolution
-  name: (constant) @AlabasterDefinition)
-(scope_resolution
-  scope: (constant) @AlabasterDefinition)
+((alias
+  name: (_) @AlabasterDefinition) @_definition
+  (#not-has-ancestor? @_definition method))
 
-((simple_symbol) @AlabasterConstant)
-((hash_key_symbol) @AlabasterConstant)
+((class
+  name: [
+    (constant) @AlabasterDefinition
+    (scope_resolution
+      name: (constant) @AlabasterDefinition)
+  ]) @_definition
+  (#not-has-ancestor? @_definition method))
 
-((instance_variable) @AlabasterPunct)
+((module
+  name: [
+    (constant) @AlabasterDefinition
+    (scope_resolution
+      name: (constant) @AlabasterDefinition)
+  ]) @_definition
+  (#not-has-ancestor? @_definition method))
+
+((method
+  name: (_) @AlabasterBase) @_definition
+  (#has-ancestor? @_definition method))
+
+((singleton_method
+  name: (_) @AlabasterBase) @_definition
+  (#has-ancestor? @_definition method))
+
+((alias
+  name: (_) @AlabasterBase) @_definition
+  (#has-ancestor? @_definition method))
+
+((class
+  name: [
+    (constant) @AlabasterBase
+    (scope_resolution
+      name: (constant) @AlabasterBase)
+  ]) @_definition
+  (#has-ancestor? @_definition method))
+
+((module
+  name: [
+    (constant) @AlabasterBase
+    (scope_resolution
+      name: (constant) @AlabasterBase)
+  ]) @_definition
+  (#has-ancestor? @_definition method))

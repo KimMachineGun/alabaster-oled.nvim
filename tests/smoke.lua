@@ -3,6 +3,41 @@ local root = vim.fs.dirname(vim.fs.dirname(source))
 vim.opt.runtimepath:prepend(root)
 vim.opt.runtimepath:append(vim.fs.joinpath(root, "after"))
 
+for _, path in ipairs(vim.fn.globpath(vim.o.packpath, "pack/*/opt/nvim-treesitter/runtime", false, true)) do
+    vim.opt.runtimepath:prepend(path)
+end
+
+local parser_dirs = {
+    vim.fs.joinpath(vim.fn.stdpath("data"), "site", "parser"),
+    vim.fn.expand("~/.local/share/nvim-pack/site/parser"),
+    vim.fn.expand("~/.local/share/nvim/site/parser"),
+}
+if vim.env.ALABASTER_PARSER_DIR and vim.env.ALABASTER_PARSER_DIR ~= "" then
+    table.insert(parser_dirs, 1, vim.env.ALABASTER_PARSER_DIR)
+    vim.opt.runtimepath:prepend(vim.fs.dirname(vim.env.ALABASTER_PARSER_DIR))
+end
+
+local function parser_path(language)
+    for _, directory in ipairs(parser_dirs) do
+        if directory and directory ~= "" then
+            local path = vim.fs.joinpath(directory, language .. ".so")
+            if vim.uv.fs_stat(path) then return path end
+        end
+    end
+end
+
+local query_root = vim.fs.joinpath(root, "after", "queries")
+for _, language in ipairs(vim.fn.readdir(query_root)) do
+    local path = parser_path(language)
+    if path then
+        vim.treesitter.language.add(language, { path = path })
+        local query_path = vim.fs.joinpath(query_root, language, "highlights.scm")
+        vim.treesitter.query.parse(language, table.concat(vim.fn.readfile(query_path), "\n"))
+    end
+end
+
+dofile(vim.fs.joinpath(root, "tests", "query_semantics.lua"))(root, parser_path)
+
 local function highlight(name)
     return vim.api.nvim_get_hl(0, { name = name, link = false })
 end
@@ -31,8 +66,13 @@ assert_color("Comment", "bg", "#292815")
 assert_color("Special", "fg", "#708B8D")
 assert_color("SpecialKey", "fg", "#708B8D")
 assert_color("SpecialChar", "fg", "#CC8BC9")
+assert(next(highlight("@lsp.type.function")) == nil, "LSP functions should defer to Tree-sitter")
+assert(next(highlight("@lsp.type.variable")) == nil, "LSP variables should defer to Tree-sitter")
 assert(next(highlight("@lsp.type.namespace.go")) == nil, "Go namespace LSP highlighting should be disabled")
 assert(next(highlight("@lsp.type.variable.go")) == nil, "Go variable LSP highlighting should be disabled")
+assert_link("@lsp.type.enumMember", "AlabasterConstant")
+assert_link("@lsp.type.macro", "AlabasterConstant")
+assert_link("@lsp.typemod.variable.readonly.go", "AlabasterConstant")
 
 local terminal = {
     "#000000",
@@ -58,8 +98,8 @@ for index, expected in ipairs(terminal) do
     assert(vim.g[name] == expected, ("%s: expected %s, got %s"):format(name, expected, tostring(vim.g[name])))
 end
 
-local go_parser = vim.fs.joinpath(vim.fn.stdpath("data"), "site", "parser", "go.so")
-if vim.uv.fs_stat(go_parser) then
+local go_parser = parser_path("go")
+if go_parser then
     vim.treesitter.language.add("go", { path = go_parser })
     vim.api.nvim_buf_set_lines(0, 0, -1, false, {
         "package sample",

@@ -1,34 +1,69 @@
 ;; vim: ft=query
 ;; extends
 
-(function_declarator
-  declarator: (identifier) @AlabasterDefinition)
-(preproc_function_def
-  name: (identifier) @AlabasterDefinition)
+(identifier) @AlabasterBase
 
-(type_definition
-  type: (struct_specifier
-          name: (type_identifier) @AlabasterDefinition)
-  declarator: (type_identifier) @AlabasterDefinition)
+[
+  (preproc_def
+    name: (_) @AlabasterConstant)
+  (preproc_function_def
+    name: (identifier) @AlabasterConstant)
+  (enumerator
+    name: (identifier) @AlabasterConstant)
+]
 
-(type_definition
-  type: (struct_specifier)
-  declarator: (type_identifier) @AlabasterDefinition)
+((field_identifier) @AlabasterDefinition
+  (#has-ancestor? @AlabasterDefinition field_declaration)
+  (#not-has-ancestor? @AlabasterDefinition compound_statement parameter_declaration))
 
-(type_definition
-  type: (enum_specifier)
-  declarator: (type_identifier) @AlabasterDefinition)
+((identifier) @AlabasterDefinition
+  (#has-parent? @AlabasterDefinition declaration pointer_declarator array_declarator function_declarator parenthesized_declarator)
+  (#has-ancestor? @AlabasterDefinition declaration function_definition)
+  (#not-has-ancestor? @AlabasterDefinition compound_statement parameter_declaration field_declaration))
 
-(struct_specifier
-  name: (type_identifier) @AlabasterDefinition)
+((declaration
+  declarator: (init_declarator
+    declarator: (identifier) @AlabasterDefinition)) @_definition
+  (#not-has-ancestor? @_definition compound_statement field_declaration))
 
-(declaration
-  type: (struct_specifier
-          name: (type_identifier) @AlabasterBase))
+((type_definition
+  declarator: (type_identifier) @AlabasterDefinition) @_definition
+  (#not-has-ancestor? @_definition compound_statement))
 
-(enum_specifier
-    name: (type_identifier) @AlabasterDefinition)
+((type_identifier) @AlabasterDefinition
+  (#has-parent? @AlabasterDefinition pointer_declarator array_declarator function_declarator parenthesized_declarator)
+  (#has-ancestor? @AlabasterDefinition type_definition)
+  (#not-has-ancestor? @AlabasterDefinition compound_statement))
 
-(declaration
-  type: (enum_specifier
-          name: (type_identifier) @AlabasterBase))
+((struct_specifier
+  name: (type_identifier) @AlabasterDefinition
+  body: (field_declaration_list)) @_definition
+  (#not-has-ancestor? @_definition compound_statement field_declaration parameter_declaration))
+
+((struct_specifier
+  name: (type_identifier) @AlabasterDefinition
+  !body) @_definition
+  (#not-has-parent? @_definition declaration field_declaration parameter_declaration type_definition)
+  (#not-has-ancestor? @_definition compound_statement))
+
+((union_specifier
+  name: (type_identifier) @AlabasterDefinition
+  body: (field_declaration_list)) @_definition
+  (#not-has-ancestor? @_definition compound_statement field_declaration parameter_declaration))
+
+((union_specifier
+  name: (type_identifier) @AlabasterDefinition
+  !body) @_definition
+  (#not-has-parent? @_definition declaration field_declaration parameter_declaration type_definition)
+  (#not-has-ancestor? @_definition compound_statement))
+
+((enum_specifier
+  name: (type_identifier) @AlabasterDefinition
+  body: (enumerator_list)) @_definition
+  (#not-has-ancestor? @_definition compound_statement field_declaration parameter_declaration))
+
+((enum_specifier
+  name: (type_identifier) @AlabasterDefinition
+  !body) @_definition
+  (#not-has-parent? @_definition declaration field_declaration parameter_declaration type_definition)
+  (#not-has-ancestor? @_definition compound_statement))
